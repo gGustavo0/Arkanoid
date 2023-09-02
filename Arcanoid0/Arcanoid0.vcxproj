@@ -135,6 +135,8 @@
     <ClInclude Include="Arkanoid.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Bonus.h" />
+    <ClInclude Include="Bonuses.h" />
     <ClInclude Include="Counter.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Platform.h" />
@@ -143,6 +145,8 @@
     <ClCompile Include="Arkanoid.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Bonus.cpp" />
+    <ClCompile Include="Bonuses.cpp" />
     <ClCompile Include="Counter.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Platform.cpp" />

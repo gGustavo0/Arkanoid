@@ -1,6 +1,6 @@
 #pragma once
 
-#define POINTS "points"
+#define POINTS "points: "
 #define GAME_OVER "GAME OVER!"
 #define WIN       "YOU WIN"
 

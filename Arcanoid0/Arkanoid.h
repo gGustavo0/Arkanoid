@@ -32,6 +32,7 @@ public:
 
 	vector<vector<Block>>               blocks;
 	vector<Ball>                        balls;
+	vector<Bonus>                      bonuses;
 	int                                 blocksCount;
 	Physics                             physics;
 

@@ -1,5 +1,7 @@
 #include "Arkanoid.h"
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 
 Arkanoid::Arkanoid(int windowWidth, int windowHeight, string title, int platformWidth
 	, int platformHeight, int ballRadius, int platformPositionX, int platformPositionY) :
@@ -14,11 +16,12 @@ Arkanoid::Arkanoid(int windowWidth, int windowHeight, string title, int platform
 }
 
 void Arkanoid::createBlocks() {
+	srand(time(0));
 	blocksCount = 14 * 4;
 	blocks.resize(14);
 	for (int i = 0; i < 14; i++) {
 		for (int j = 0; j < 4; j++) {
-			blocks[i].push_back(*new Block(50 + 50 * i, 50 + 50 * j, 50));
+			blocks[i].push_back(*new Block(50 + 50 * i, 50 + 50 * j, bonuses, 50));
 		}
 	}
 }
@@ -34,10 +37,30 @@ void Arkanoid::start() {
 		{
 			if (event.type == sf::Event::Closed)
 				window->close();
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){ 
+				cout << platform.platform.getPosition().x << endl;
 				platform.move(-elapsed.asSeconds(), window->getSize().x);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+				for (auto& ball : balls) 
+					ball.moveWithPlatform(platform.speed, -elapsed.asSeconds());
+				
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+				cout << platform.platform.getPosition().x << endl;
 				platform.move(elapsed.asSeconds(), window->getSize().x);
+				for (auto& ball : balls) 
+					ball.moveWithPlatform(platform.speed, elapsed.asSeconds());
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				for (auto& ball : balls) {
+					for (auto& ball : balls) {
+						ball.speedX = 200;
+						ball.speedY = -200;
+						ball.isSticked = false;
+					}
+				}
+				
+			}
+				
 			
 		}
 		if (counter.ifGameOver()) {
@@ -45,11 +68,20 @@ void Arkanoid::start() {
 		}
 		else {
 			for (auto& ball : balls) {
-				physics.checkCollisions(ball, blocks, platform, *window, elapsed.asSeconds());
-				ball.move(elapsed.asSeconds(), window->getSize().x, window->getSize().y, platform.platform, blocks);
+				physics.checkCollisions(ball, blocks, platform, *window, elapsed.asSeconds(), counter);
+				ball.move(elapsed.asSeconds());
 			}
 			window->clear(sf::Color::Black);
 			window->draw(platform.platform);
+			window->draw(counter.getPoints());
+			if (counter.points == 0)
+			{
+				window->clear(sf::Color::Black);
+				window->draw(counter.getGameOver());
+				//break;
+			} else {
+			
+			}
 			for (auto& ball : balls) {
 				if (ball.exists)
 					window->draw(ball.ball);
@@ -71,6 +103,7 @@ void Arkanoid::start() {
 					}
 				}
 			}
+
 			window->draw(counter.getPoints());
 			window->display();
 		}

@@ -6,7 +6,7 @@ class Platform
 {
 public:
 
-	int speed;
+	int speed = 8000;
 	sf::RectangleShape    platform;
 
 	Platform(int width, int heigth, int windowWidth, int windowHeight);

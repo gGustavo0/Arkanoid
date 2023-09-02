@@ -4,19 +4,26 @@
 Ball::Ball(int radius, int windowWidth, int windowHeight, int platformWidth){
 	ball = *new sf::CircleShape(radius);
 	ball.setPosition(windowWidth / 2, windowHeight * 0.95 - 2 * radius);
-	speedX =200;
-	speedY = -200;
+	speedX = 0;
+	speedY = 0;
 }
 
+void Ball::stick() {
+	speedX = 0;
+	speedY = 0;
+}
+
+void Ball::moveWithPlatform(int speed, float elapsed) {
+	//cout << ball.getPosition().x << endl;
+	if(isSticked)
+		ball.move(speed * elapsed, 0);
+}
 bool Ball::isFallen(const sf::RectangleShape& r) {
 	return ball.getPosition().y >= r.getPosition().y;
 }
 
-void Ball::move(float elapsed, int windowWidth, int windowHeight, sf::RectangleShape platform, std::vector<std::vector<Block>> &blocks) {
-	//одновременно пересекается с двумя плоками и меняет скорость дважды 
-	
+void Ball::move(float elapsed) {
 	ball.move(speedX * elapsed, speedY * elapsed);
-
 }
 
 int Ball::getX() {
