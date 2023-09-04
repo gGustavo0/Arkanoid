@@ -8,6 +8,7 @@
 #include                           "Ball.h";
 #include                           "Counter.h";
 #include                           "Physics.h"
+#include <list>
 
 #define WINDOW_HEIGTH              800
 #define WINDOW_WIDTH               800
@@ -32,7 +33,7 @@ public:
 
 	vector<vector<Block>>               blocks;
 	vector<Ball>                        balls;
-	vector<Bonus>                      bonuses;
+	list<Bonus*>                       bonuses;
 	int                                 blocksCount;
 	Physics                             physics;
 

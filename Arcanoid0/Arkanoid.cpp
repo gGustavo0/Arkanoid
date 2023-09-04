@@ -38,14 +38,14 @@ void Arkanoid::start() {
 			if (event.type == sf::Event::Closed)
 				window->close();
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){ 
-				cout << platform.platform.getPosition().x << endl;
+				//cout << platform.platform.getPosition().x << endl;
 				platform.move(-elapsed.asSeconds(), window->getSize().x);
 				for (auto& ball : balls) 
 					ball.moveWithPlatform(platform.speed, -elapsed.asSeconds());
 				
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-				cout << platform.platform.getPosition().x << endl;
+				//cout << platform.platform.getPosition().x << endl;
 				platform.move(elapsed.asSeconds(), window->getSize().x);
 				for (auto& ball : balls) 
 					ball.moveWithPlatform(platform.speed, elapsed.asSeconds());
@@ -103,7 +103,31 @@ void Arkanoid::start() {
 					}
 				}
 			}
-
+			for (auto bonus : bonuses)
+			{
+				//cout << "ARC" << endl;
+				//cout << bonuses.size() << endl;
+					if (physics.bonusPlatformCollision(bonus->bonus, platform)) {
+						bonus->destroy();
+						//bonuses.remove(bonus);
+						cout << "AAAA" << endl;
+						//delete(&bonus);
+						continue;
+					}
+					if (physics.screenBonusCollision(bonus->bonus, *window))
+					{
+						//bonuses.remove(bonus);
+						//delete(&bonus);
+						continue;
+					}
+			}
+			for (auto& bonus: bonuses) 
+			{
+				bonus->move(elapsed.asSeconds());
+				window->draw(bonus->bonus);
+			}
+			if (platform.spawnNewBall)
+				balls.push_back(*new Ball());
 			window->draw(counter.getPoints());
 			window->display();
 		}

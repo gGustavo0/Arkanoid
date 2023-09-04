@@ -14,9 +14,10 @@ public:
 	bool isSticked = true;
 	bool toStick = false;
 	bool exists = true;
+
 	sf::CircleShape ball;
 
-	Ball(int radius, int windowWidth, int windowHeight, int platformWidth);
+	Ball(int radius = 10, int windowWidth = 800, int windowHeight = 800, int platformWidth = 150);
 	bool isFallen(const sf::RectangleShape&);
 	void moveWithPlatform(int, float);
 	void respawn(int platformPositionX, int platformPositionY, int platformWidth);

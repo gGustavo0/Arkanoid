@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 
-Block::Block(int x, int y, std::vector<Bonus>& bonuses, int size): block(*new sf::RectangleShape(sf::Vector2f(size, size))), bonuses(bonuses) {
+Block::Block(int x, int y, std::list<Bonus*>& bonuses, int size): block(*new sf::RectangleShape(sf::Vector2f(size, size))), bonuses(bonuses) {
 	block.setOutlineThickness(-5);
 	block.setOutlineColor(sf::Color::Black);
 	block.setPosition(sf::Vector2f(x, y));
@@ -18,6 +18,7 @@ Block::Block(int x, int y, std::vector<Bonus>& bonuses, int size): block(*new sf
 	switch (r)
 	{
 	default:
+		bonusType = BonusType::NONE;
 		break;
 	case 0:
 		bonusType = BonusType::UNDESTRUCTUBLE;
@@ -86,7 +87,7 @@ Block::Block(int x, int y, std::vector<Bonus>& bonuses, int size): block(*new sf
 	
 }
 
-void Block::getHit(Counter& counter) {
+void Block::getHit(Counter& counter, Ball& ball, Platform& platform) {
 	if (hp == 3)
 	{
 		block.setFillColor(sf::Color::Yellow);
@@ -98,10 +99,41 @@ void Block::getHit(Counter& counter) {
 	if (hp == 1)
 	{
 		counter.plusPoint();
-		//bonuses.push_back();
+		switch (bonusType)
+		{
+		case BonusType::NONE:
+			break;
+		case BonusType::UNDESTRUCTUBLE:
+			hp = -1;
+			break;
+		case BonusType::INCREASE_BALL_SPEED:
+			bonuses.push_back(new BonusIncreaseBallSpeed(block.getPosition(),ball));
+			break;
+		case BonusType::DECREASE_BALL_SPEED:
+			bonuses.push_back(new BonusDecreaseBallSpeed(block.getPosition(), ball));
+			break;
+		case BonusType::INCREASE_PLATFORM:
+			bonuses.push_back(new BonusIncreasePlatform(block.getPosition(), platform));
+			break;
+		case BonusType::DECREASE_PLATFORM:
+			bonuses.push_back(new BonusDecreasePlatform(block.getPosition(), platform));
+			break;
+		case BonusType::BALL_STICKED:
+			bonuses.push_back(new BonusStickToPlatform(block.getPosition(), ball));
+			break;
+		case BonusType::FLOOR:
+			bonuses.push_back(new BonusFloor(block.getPosition(), platform));
+			break;
+		case BonusType::SECOND_BALL:
+			bonuses.push_back(new BonusBall(block.getPosition(), platform));
+			break;
+		default:
+			break;
+		}
 	}
 	if (hp > 0) { hp--; }
-	
+	cout << "BLOCK" << endl;
+	cout << bonuses.size() << endl;
 }
 
 bool Block::exists() {

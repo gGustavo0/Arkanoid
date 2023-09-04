@@ -1,12 +1,15 @@
 #pragma once
 #include "Block.h"
 #include "Bonus.h"
+#include "Bonuses.h"
 #include "Counter.h"
 #include <vector>;
 #include <SFML/Graphics.hpp>
+#include <list>
 using namespace std;
 
 enum class BonusType {
+	NONE,
 	UNDESTRUCTUBLE,
 	INCREASE_BALL_SPEED,
 	DECREASE_BALL_SPEED,
@@ -22,14 +25,14 @@ enum class BonusType {
 class Block
 {
 public:
-	int hp = 3;
+	int hp = 1;
 	sf::RectangleShape    block;
-	vector<Bonus>& bonuses;
+	list<Bonus*>& bonuses;
 	BonusType bonusType;
 	sf::Texture texture;
-	Block(int x, int y, vector<Bonus>&, int size = SIZE);
+	Block(int x, int y, list<Bonus*>&, int size = SIZE);
 	
-	void getHit(Counter& counter);
+	void getHit(Counter& counter, Ball&, Platform&);
 	bool exists();
 
 

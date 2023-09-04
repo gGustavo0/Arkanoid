@@ -6,9 +6,12 @@
 class Bonus
 {
 public:
-	int speed = 50;
+	int speed = 100;
 	sf::RectangleShape bonus;
 	Bonus(sf::Vector2f);
+	virtual void destroy();
 	void move(float);
+	friend bool operator == (const Bonus& b, const Bonus& t);
+	friend bool operator != (const Bonus& b, const Bonus& t);
 };
 

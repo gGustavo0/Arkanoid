@@ -8,6 +8,8 @@ public:
 
 	int speed = 8000;
 	sf::RectangleShape    platform;
+	bool isFloor = false;
+	bool spawnNewBall = false;
 
 	Platform(int width, int heigth, int windowWidth, int windowHeight);
 	
