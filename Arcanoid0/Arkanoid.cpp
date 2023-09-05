@@ -8,7 +8,7 @@ Arkanoid::Arkanoid(int windowWidth, int windowHeight, string title, int platform
 
 	window(new sf::RenderWindow(sf::VideoMode(windowHeight, windowWidth), title, sf::Style::Close)),
 	platform(*new Platform(platformWidth, platformHeight, windowWidth, windowHeight)),
-	ball(*new Ball(ballRadius, windowWidth, windowHeight, platformWidth)),
+	ball(*new Ball(platform.platform.getPosition().x, platform.platform.getPosition().y, ballRadius, windowWidth, windowHeight, platformWidth)),
 	counter(*new Counter()),
 	physics(*new Physics())
 {
@@ -41,21 +41,23 @@ void Arkanoid::start() {
 				//cout << platform.platform.getPosition().x << endl;
 				platform.move(-elapsed.asSeconds(), window->getSize().x);
 				for (auto& ball : balls) 
-					ball.moveWithPlatform(platform.speed, -elapsed.asSeconds());
+					ball.moveWithPlatform(platform.platform);
 				
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
 				//cout << platform.platform.getPosition().x << endl;
 				platform.move(elapsed.asSeconds(), window->getSize().x);
 				for (auto& ball : balls) 
-					ball.moveWithPlatform(platform.speed, elapsed.asSeconds());
+					ball.moveWithPlatform(platform.platform);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 				for (auto& ball : balls) {
 					for (auto& ball : balls) {
-						ball.speedX = 200;
-						ball.speedY = -200;
-						ball.isSticked = false;
+						if (ball.isSticked) {
+							ball.speedX = 200;
+							ball.speedY = -200;
+							ball.isSticked = false;
+						}
 					}
 				}
 				
@@ -80,16 +82,23 @@ void Arkanoid::start() {
 				window->draw(counter.getGameOver());
 				//break;
 			} else {
-			
+				if (balls.size() == 0)
+				{
+					balls.push_back(*new Ball(platform.platform.getPosition().x, platform.platform.getPosition().y));
+				}
 			}
-			for (auto& ball : balls) {
-				if (ball.exists)
-					window->draw(ball.ball);
+
+
+			for (auto ball = balls.begin(); ball != balls.end();) {
+				if (ball == balls.end()) break;
+				if ((*ball).exists){
+					window->draw((*ball).ball);
+					ball++;
+					}
 				else
 				{
-					swap(ball, balls.back());
-					balls.pop_back();
-					delete(&ball);
+					ball = balls.erase(ball);
+					//delete(&ball);
 					//remove
 				}
 			}
@@ -103,31 +112,32 @@ void Arkanoid::start() {
 					}
 				}
 			}
-			for (auto bonus : bonuses)
-			{
-				//cout << "ARC" << endl;
-				//cout << bonuses.size() << endl;
-					if (physics.bonusPlatformCollision(bonus->bonus, platform)) {
-						bonus->destroy();
-						//bonuses.remove(bonus);
-						cout << "AAAA" << endl;
-						//delete(&bonus);
-						continue;
-					}
-					if (physics.screenBonusCollision(bonus->bonus, *window))
-					{
-						//bonuses.remove(bonus);
-						//delete(&bonus);
-						continue;
-					}
+			auto li = bonuses.begin();
+			while (li != bonuses.end()) {
+				if (li == bonuses.end()) break;
+				if (physics.bonusPlatformCollision((*li)->bonus, platform)) {
+					(*li)->destroy();
+					li = bonuses.erase(li);
+					cout << "AAAA" << endl;
+					//delete(*li);
+					continue;
+				}
+				if (physics.screenBonusCollision((*li)->bonus, *window))
+				{
+					li = bonuses.erase(li);
+					//delete(*li);
+					continue;
+				}
+				li++;
 			}
+
 			for (auto& bonus: bonuses) 
 			{
 				bonus->move(elapsed.asSeconds());
 				window->draw(bonus->bonus);
 			}
 			if (platform.spawnNewBall)
-				balls.push_back(*new Ball());
+				balls.push_back(*new Ball(platform.platform.getPosition().x, platform.platform.getPosition().y));
 			window->draw(counter.getPoints());
 			window->display();
 		}

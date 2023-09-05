@@ -17,9 +17,9 @@ public:
 
 	sf::CircleShape ball;
 
-	Ball(int radius = 10, int windowWidth = 800, int windowHeight = 800, int platformWidth = 150);
+	Ball(int platformPositionX, int platformPositionY, int radius = 10, int windowWidth = 800, int windowHeight = 800, int platformWidth = 150);
 	bool isFallen(const sf::RectangleShape&);
-	void moveWithPlatform(int, float);
+	void moveWithPlatform(const sf::RectangleShape&);
 	void respawn(int platformPositionX, int platformPositionY, int platformWidth);
 	void move(float);
 	int getX();

@@ -3,11 +3,13 @@
 #include                           <SFML/Graphics.hpp>
 #include                           <string>
 #include                           <memory>
-#include                           "Platform.h";
+#include                           "Platform.h"
 #include                           "Block.h";
 #include                           "Ball.h";
-#include                           "Counter.h";
+#include                           "Counter.h"
 #include                           "Physics.h"
+#include                           "Bonus.h"
+#include                           "Bonuses.h"
 #include <list>
 
 #define WINDOW_HEIGTH              800
@@ -32,8 +34,8 @@ public:
 	Counter                             counter;
 
 	vector<vector<Block>>               blocks;
-	vector<Ball>                        balls;
-	list<Bonus*>                       bonuses;
+	list<Ball>                          balls;
+	list<Bonus*>                        bonuses;
 	int                                 blocksCount;
 	Physics                             physics;
 

@@ -1,9 +1,9 @@
 #include "Ball.h"
 #include <iostream>
 
-Ball::Ball(int radius, int windowWidth, int windowHeight, int platformWidth){
+Ball::Ball(int platformPosition, int platformPositionY, int radius, int windowWidth, int windowHeight, int platformWidth){
 	ball = *new sf::CircleShape(radius);
-	ball.setPosition(windowWidth / 2, windowHeight * 0.95 - 2 * radius);
+	ball.setPosition(platformPosition + platformWidth / 2, platformPositionY - radius * 2);
 	speedX = 0;
 	speedY = 0;
 }
@@ -13,10 +13,10 @@ void Ball::stick() {
 	speedY = 0;
 }
 
-void Ball::moveWithPlatform(int speed, float elapsed) {
+void Ball::moveWithPlatform(const sf::RectangleShape& r) {
 	//cout << ball.getPosition().x << endl;
-	if(isSticked)
-		ball.move(speed * elapsed, 0);
+	if (isSticked)
+		ball.setPosition(sf::Vector2f(r.getPosition().x + r.getSize().x / 2 - ball.getRadius(), r.getPosition().y - ball.getRadius() * 2));
 }
 bool Ball::isFallen(const sf::RectangleShape& r) {
 	return ball.getPosition().y >= r.getPosition().y;
