@@ -1,8 +1,5 @@
 #pragma once
 
-#include                           <SFML/Graphics.hpp>
-#include                           <string>
-#include                           <memory>
 #include                           "Platform.h"
 #include                           "Block.h";
 #include                           "Ball.h";
@@ -10,7 +7,15 @@
 #include                           "Physics.h"
 #include                           "Bonus.h"
 #include                           "Bonuses.h"
-#include <list>
+
+#include                           <list>
+#include                           <iostream>
+#include                           <ctime>
+#include                           <cstdlib>
+#include                           <SFML/Graphics.hpp>
+#include                           <string>
+#include                           <memory>
+
 
 #define WINDOW_HEIGTH              800
 #define WINDOW_WIDTH               800

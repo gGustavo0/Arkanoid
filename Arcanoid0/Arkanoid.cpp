@@ -1,7 +1,5 @@
 #include "Arkanoid.h"
-#include <iostream>
-#include <ctime>
-#include <cstdlib>
+
 
 Arkanoid::Arkanoid(int windowWidth, int windowHeight, string title, int platformWidth
 	, int platformHeight, int ballRadius, int platformPositionX, int platformPositionY) :
