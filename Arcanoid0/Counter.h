@@ -1,30 +1,29 @@
 #pragma once
 
-#define POINTS "points: "
-#define GAME_OVER "GAME OVER!"
-#define WIN       "YOU WIN"
+#define POINTS       "points: "
+#define GAME_OVER    "GAME OVER!"
+#define WIN          "YOU WIN"
 
-#include                           <SFML/Graphics.hpp>
+#include             <SFML/Graphics.hpp>
+#include             <iostream>
+#include             <string>
 
 class Counter
 {
 public:
-	int points = 1;
-
-	sf::Font font;
-	sf::Text pointsText;
-	sf::Text gameOver;
-	sf::Text win;
-
 	Counter();
 
-	sf::Text& getGameOver();
-	sf::Text& getPoints();
-	sf::Text& getWin();
+	int              points        = 1  ;
 
-	void plusPoint();
+	sf::Font         font               ;
+	sf::Text         pointsText         ;
+	sf::Text         gameOver           ;
+	sf::Text         win                ;
 
-	void minusPoints();
-
-	bool ifGameOver();
+	sf::Text&        getGameOver()      ;
+	sf::Text&        getPoints()        ;
+	sf::Text&        getWin()           ;
+	void             plusPoint()        ;
+	void             minusPoints()      ;
+	bool             ifGameOver()       ;
 };

@@ -1,15 +1,11 @@
-
 #include "Block.h"
-#include <iostream>
-#include <cstdlib>
-
 
 Block::Block(int x, int y, std::list<Bonus*>& bonuses, int size): block(*new sf::RectangleShape(sf::Vector2f(size, size))), bonuses(bonuses) {
 	block.setOutlineThickness(-5);
 	block.setOutlineColor(sf::Color::Black);
 	block.setPosition(sf::Vector2f(x, y));
 	block.setFillColor(sf::Color::Green);
-	int r =  rand() % 37;
+	int r = rand() % 37;
 	if (!texture.create(200, 200))
 	{
 		// error...
@@ -21,9 +17,9 @@ Block::Block(int x, int y, std::list<Bonus*>& bonuses, int size): block(*new sf:
 		bonusType = BonusType::NONE;
 		break;
 	case 0:
-		bonusType = BonusType::UNDESTRUCTUBLE;
+		bonusType    = BonusType::UNDESTRUCTUBLE;
+		hp           = -1;
 		block.setFillColor(sf::Color::Cyan);
-		hp = -1;
 		break;
 	case 1:
 		bonusType = BonusType::BALL_STICKED;
@@ -88,17 +84,12 @@ Block::Block(int x, int y, std::list<Bonus*>& bonuses, int size): block(*new sf:
 }
 
 void Block::getHit(Counter& counter, Ball& ball, Platform& platform) {
-	if (hp == 3)
-	{
-		block.setFillColor(sf::Color::Yellow);
-	}
-	if (hp == 2)
-	{
-		block.setFillColor(sf::Color::Red);
-	}
+	counter.plusPoint();
+	if (hp == 3) block.setFillColor(sf::Color::Yellow);
+	if (hp == 2) block.setFillColor(sf::Color::Red);
 	if (hp == 1)
 	{
-		counter.plusPoint();
+		
 		switch (bonusType)
 		{
 		case BonusType::NONE:
@@ -131,9 +122,7 @@ void Block::getHit(Counter& counter, Ball& ball, Platform& platform) {
 			break;
 		}
 	}
-	if (hp > 0) { hp--; }
-	cout << "BLOCK" << endl;
-	cout << bonuses.size() << endl;
+	if (hp > 0) hp--; 
 }
 
 bool Block::exists() {
