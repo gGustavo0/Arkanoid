@@ -5,65 +5,58 @@
 #include    <vector>
 
 class BonusDecreasePlatform : public Bonus {
-public:
+private:
     Platform& platform;
-    
+public:
     BonusDecreasePlatform(sf::Vector2f position, Platform& platform);
-
     virtual void destroy() override;
 };
 
 class BonusIncreasePlatform : public Bonus {
-public:
+private:
     Platform& platform;
-
+public:
     BonusIncreasePlatform(sf::Vector2f position, Platform& platform);
-
     virtual void destroy() override;
 };
 
 class BonusIncreaseBallSpeed : public Bonus {
-public:
+private:
     Ball& ball;
-
+public:
     BonusIncreaseBallSpeed(sf::Vector2f position, Ball& ball);
-
     virtual void destroy() override;
 };
 
 class BonusDecreaseBallSpeed : public Bonus {
-public:
+private:
     Ball& ball;
-
+public:
     BonusDecreaseBallSpeed(sf::Vector2f position, Ball& ball);
-
     virtual void destroy() override;
 };
 
 
 class BonusStickToPlatform : public Bonus {
-public:
+private:
     Ball& ball;
-
+public:
     BonusStickToPlatform(sf::Vector2f position, Ball& ball);
-
     virtual void destroy() override;
 };
 
 class BonusBall : public Bonus {
+private:
+    Platform& platform;
 public:
-    Platform &platform;
-
     BonusBall(sf::Vector2f position, Platform& );
-
     virtual void destroy() override;
 };
 
 class BonusFloor : public Bonus {
-public:
+private:
     Platform& platform;
-
+public:
     BonusFloor(sf::Vector2f position, Platform& platform);
-
     virtual void destroy() override;
 };

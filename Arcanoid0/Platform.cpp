@@ -17,18 +17,18 @@ void Platform::move(float elapsed, int windowWidth) {
 	platform.move(speed * elapsed, 0.0);
 }
 
-int Platform::getHeight() {
-	return platform.getSize().y;
+void Platform::setSize(int x, int y) {
+	platform.setSize(sf::Vector2f(x, y));
 }
 
-int Platform::getWidth() {
-	return platform.getSize().x;
+sf::Vector2f Platform::getSize() const {
+	return platform.getSize();
 }
 
-int Platform::getX() {
-	return platform.getPosition().x;
+sf::Vector2f Platform::getPosition() const {
+	return platform.getPosition();
 }
 
-int Platform::getY() {
-	return platform.getPosition().y;
+sf::RectangleShape& Platform::getPlatform() {
+	return platform;
 }

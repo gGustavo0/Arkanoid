@@ -1,4 +1,4 @@
-#include "Arkanoid.h";
+#include "Arkanoid.h"
 
 int main()
 {

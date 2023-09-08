@@ -5,7 +5,7 @@
 #include    "Bonuses.h"
 #include    "Counter.h"
 
-#include    <vector>;
+#include    <vector>
 #include    <SFML/Graphics.hpp>
 #include    <list>
 #include    <iostream>
@@ -32,16 +32,20 @@ class Block
 public:
 
 	Block(int x, int y, list<Bonus*>&, int size = SIZE);
-
-	int                   hp           = 3  ;
-	sf::RectangleShape    block             ;
-	list<Bonus*>&         bonuses           ;
-	BonusType             bonusType         ;
-	sf::Texture           texture           ;
 	
-	void                  getHit(Counter& counter, Ball&, Platform&);
-	bool                  exists();
+	int                    getHP           ()                                      const  ;
+	sf::RectangleShape&    getBlock        ()                                             ;
+	BonusType              getBonusType    ()                                      const  ;
+	void                   getHit          (Counter& counter, Ball&, Platform&)           ;
+	bool                   exists          ()                                             ;
+	sf::Vector2f           getPosition     ()                                      const  ;
+	int                    getSize         ()                                      const  ;
 
-
+private:
+	sf::Texture           texture;
+	sf::RectangleShape    block;
+	BonusType             bonusType;
+	int                   hp = 3;
+	list<Bonus*>&         bonuses;
 };
 

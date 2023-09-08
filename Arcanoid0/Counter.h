@@ -10,20 +10,20 @@
 
 class Counter
 {
+private:
+	int              points = 1              ;
+	sf::Font         font                    ;
+	sf::Text         pointsText              ;
+	sf::Text         gameOver                ;
+	sf::Text         win                     ;
 public:
 	Counter();
 
-	int              points        = 1  ;
-
-	sf::Font         font               ;
-	sf::Text         pointsText         ;
-	sf::Text         gameOver           ;
-	sf::Text         win                ;
-
-	sf::Text&        getGameOver()      ;
-	sf::Text&        getPoints()        ;
-	sf::Text&        getWin()           ;
-	void             plusPoint()        ;
-	void             minusPoints()      ;
-	bool             ifGameOver()       ;
+	sf::Text&        getGameOver()           ;
+	sf::Text&        getPoints()             ;
+	sf::Text&        getWin()                ;
+	bool             ifWin()          const  ;
+	void             plusPoint()             ;
+	void             minusPoints()           ;
+	bool             ifGameOver()     const  ;
 };

@@ -1,14 +1,12 @@
 #include "Physics.h"
-#include <iostream>
 
 bool Physics::intersects(sf::Shape& a, sf::Shape& b) {
 	return a.getGlobalBounds().intersects(b.getGlobalBounds());
 }
 
 Side Physics::side(Ball& ball, sf::RectangleShape& r) {
-	auto cn = (r.getPosition() - r.getSize() / 2.f) - (ball.ball.getPosition() - sf::Vector2f(ball.ball.getRadius() / 2.f, ball.ball.getRadius() / 2.f));
-	//cout << cn.x <<' '<<cn.y << endl;
-	sf::CircleShape b = ball.ball;
+	auto cn = (r.getPosition() - r.getSize() / 2.f) - (ball.getPosition() - sf::Vector2f(ball.getRadius() / 2.f, ball.getRadius() / 2.f));
+	sf::CircleShape b = ball.getBall();
 	if (
 		b.getPosition().y <= r.getPosition().y + r.getSize().y
 		&& b.getPosition().y + b.getRadius() * 2 >= r.getPosition().y
@@ -17,24 +15,24 @@ Side Physics::side(Ball& ball, sf::RectangleShape& r) {
 }
 
 void Physics::ballScreenCollision(Ball& ball, sf::RenderWindow& window, Counter &counter, Platform& platform) {
-	sf::CircleShape b = ball.ball;
+	sf::CircleShape b = ball.getBall();
 	if (b.getPosition().x - b.getRadius() <= 0 ) { 
-		ball.ball.setPosition(ball.ball.getRadius(),ball.ball.getPosition().y);
-		ball.speedX *= -1; 
+		ball.setPosition(ball.getRadius(), ball.getPosition().y);
+		ball.reverseSpeedX();
 	}
 	if (b.getPosition().x + b.getRadius() >= window.getSize().x)
 	{
-		ball.ball.setPosition(window.getSize().x - ball.ball.getRadius(), ball.ball.getPosition().y);
-		ball.speedX *= -1;
+		ball.setPosition(window.getSize().x - ball.getRadius(), ball.getPosition().y);
+		ball.reverseSpeedX();
 	}
 	if (b.getPosition().y - b.getRadius() <= 0) {
-		ball.ball.setPosition(ball.ball.getPosition().x, ball.ball.getRadius());
-		ball.speedY *= -1;
+		ball.setPosition(ball.getPosition().x, ball.getRadius());
+		ball.reverseSpeedY();
 	}
 	if (b.getPosition().y + b.getRadius() >= window.getSize().y) 
 		if (platform.isFloor) {
-			ball.ball.setPosition(ball.ball.getPosition().x, window.getSize().x - ball.ball.getRadius() - ball.ball.getRadius());
-			ball.speedY *= -1;
+			ball.setPosition(ball.getPosition().x, window.getSize().x - ball.getRadius() - ball.getRadius());
+			ball.reverseSpeedY();
 			platform.isFloor = false;
 		}
 		else {
@@ -44,26 +42,27 @@ void Physics::ballScreenCollision(Ball& ball, sf::RenderWindow& window, Counter 
 }
 
 void Physics::platformBallCollision(Ball& ball, Platform& platform, Counter& counter, sf::RenderWindow& window, float elapsed) {
-	sf::CircleShape           b = ball.ball;
-	sf::RectangleShape        p = platform.platform;
+	sf::CircleShape           b = ball.getBall();
+	sf::RectangleShape        p = platform.getPlatform();
 
 	if (intersects(b, p)) {
 		if (ball.toStick) {
-			ball.stick(platform.platform.getPosition().x, platform.platform.getSize().x);
+			ball.stick(platform.getPosition().x, platform.getSize().x);
+			ball.setPosition(ball.getPosition().x, platform.getPosition().y - 2 * ball.getRadius());
 			ball.isSticked    = true;
 			ball.toStick      = false;
 		}
 		else 
-			if (side(ball, platform.platform) == Side::HORIZONTAL)
+			if (side(ball, platform.getPlatform()) == Side::HORIZONTAL)
 			{
-				ball.ball.setPosition(sf::Vector2f(ball.ball.getPosition().x, platform.platform.getPosition().y - platform.platform.getSize().y));
-				ball.speedY *= -1;
+				ball.setPosition(ball.getPosition().x, platform.getPosition().y - platform.getSize().y - ball.getRadius() * 2);
+				ball.reverseSpeedY();
 			}
 			else {
-				int vec = ball.speedX > 0;
-				ball.ball.setPosition(sf::Vector2f(platform.platform.getPosition().x + !vec * platform.platform.getSize().x - vec * ball.ball.getRadius(), ball.ball.getPosition().y));
-				ball.speedX *= -1;
-				ball.speedY *= -1;
+				int vec = ball.getSpeed().x > 0;
+				ball.setPosition(platform.getPosition().x + !vec * platform.getSize().x - vec * ball.getRadius(), ball.getPosition().y);
+				ball.reverseSpeedX();
+				ball.reverseSpeedY();
 			}
 	}
 }
@@ -76,44 +75,109 @@ bool Physics::screenBonusCollision(sf::RectangleShape bonus, sf::RenderWindow& w
 
 bool Physics::bonusPlatformCollision(sf::RectangleShape bonus, Platform& platform) {
 	sf::RectangleShape b = bonus;
-	sf::RectangleShape p = platform.platform;
+	sf::RectangleShape p = platform.getPlatform();
 
 	if (intersects(b, p)) return true;
 	return false;
 }
 
 void Physics::ballBlocksCollision(Ball& ball, vector<vector<Block>>& blocks, float elapsed, Counter& counter, Platform& platform) {
-	sf::CircleShape b = ball.ball;
-	b.setPosition(sf::Vector2f(b.getPosition().x + elapsed * 5 * ball.speedX, b.getPosition().y + elapsed* 5 * ball.speedY));
+	sf::CircleShape b = ball.getBall();
+	b.setPosition(sf::Vector2f(b.getPosition().x + elapsed * 5 * ball.getSpeed().x, b.getPosition().y + elapsed * 5 * ball.getSpeed().y));
 	for (auto& i : blocks)
 		for (auto& j : i)
 		{
-			if (intersects(b, j.block)) {
+			if (intersects(b, j.getBlock())) {
 				if (j.exists()) {
-					cout << "nya" << endl;
 					j.getHit(counter, ball , platform);
-					Side s = side(ball, j.block);
+					Side s = side(ball, j.getBlock());
 					if (s == Side::VERTICAL) {
-						int vec = ball.speedY < 0;
-						ball.ball.setPosition(sf::Vector2f(ball.ball.getPosition().x, j.block.getPosition().y + j.block.getSize().y * vec - !vec * ball.getRadius()));
-						ball.speedY *= -1;
+						bool vec = ball.getSpeed().y < 0;
+						ball.setPosition(ball.getPosition().x, j.getPosition().y + j.getSize() * vec - !vec * ball.getRadius());
+						ball.reverseSpeedY();
 						return;
 					}
 					if (s == Side::HORIZONTAL) {
-						int vec = ball.speedX < 0;
-						ball.ball.setPosition(sf::Vector2f(j.block.getPosition().x + j.block.getSize().x * vec - !vec * ball.getRadius(), ball.ball.getPosition().y));
-						ball.speedX *= -1;
-						cout << "Horozontal" << endl;
+						bool vec = ball.getSpeed().x < 0;
+						ball.setPosition(j.getPosition().x + j.getSize() * vec - !vec * ball.getRadius(), ball.getPosition().y);
+						ball.reverseSpeedX();
 						return;
 					}
 				}
 			}
 	}
-	b.setPosition(sf::Vector2f(b.getPosition().x - elapsed * 5* ball.speedX, b.getPosition().y - elapsed *5* ball.speedY));
+	b.setPosition(sf::Vector2f(b.getPosition().x - elapsed * 5* ball.getSpeed().x, b.getPosition().y - elapsed * 5 * ball.getSpeed().y));
+}
+Side Physics::side(Ball& a, Ball& b) {
+	int radius = a.getRadius();
+
+	int aX = a.getPosition().x + radius;
+	int aY = a.getPosition().y + radius;
+
+	int bX = b.getPosition().x + radius;
+	int bY = b.getPosition().y + radius;
+
+	if (aX < bX - radius && aY < bY - radius) return Side::CORNER;
+	if (aX < bX - radius && aY > bY + radius) return Side::CORNER;
+	if (aX > bX + radius && aY > bY + radius) return Side::CORNER;
+	if (aX > bX + radius && aY < bY - radius) return Side::CORNER;
+
+	if (aX > bX + radius) return Side::HORIZONTAL;
+	if (aX < bX - radius) return Side::HORIZONTAL;
+
+	return Side::HORIZONTAL;
+
 }
 
-void Physics::checkCollisions(Ball& ball, vector<vector<Block>>& blocks, Platform& platform, sf::RenderWindow& window, float elapsed, Counter& counter) {
-	platformBallCollision(ball, platform, counter, window,   elapsed);
-	ballBlocksCollision  (ball, blocks,   elapsed, counter,  platform);
-	ballScreenCollision  (ball, window,   counter, platform);
+void Physics::ballBallCollision(list<Ball>& balls) {
+	auto li = balls.begin();
+	for (li; li != balls.end(); li++)
+	{
+		for (auto e = li; e != balls.end(); e++) {
+			if (li == e) continue;
+			if (intersects((*li).getBall(), (*e).getBall())) {
+				if (side(*li, *e) == Side::CORNER)
+				{
+					auto    s       = (*e).getPosition() - (*li).getPosition();
+					int     bias    = abs(ceil(sqrt(2 * (*e).getRadius() / 2)));
+
+					if (s.x >= 0 && s.y >= 0) (*li).setPosition((*e).getPosition().x - bias, (*e).getPosition().y - bias);
+					if (s.x >= 0 && s.y <= 0) (*li).setPosition((*e).getPosition().x - bias, (*e).getPosition().y + bias);
+					if (s.x <= 0 && s.y >= 0) (*li).setPosition((*e).getPosition().x + bias, (*e).getPosition().y - bias);
+					if (s.x <= 0 && s.y >= 0) (*li).setPosition((*e).getPosition().x + bias, (*e).getPosition().y + bias);
+
+					(*e)     .reverseSpeedY();
+					(*li)    .reverseSpeedY();
+					(*e)     .reverseSpeedX();
+					(*li)    .reverseSpeedX();;
+				}
+				if (side(*li, *e) == Side::VERTICAL)
+				{
+					if      ((*li).getPosition().y < (*e).getPosition().y)    (*li)    .setPosition((*li).getPosition().x    , (*e).getPosition().y - (*li).getRadius() * 2);
+					else                                                      (*e)     .setPosition((*e).getPosition().x     , (*li).getPosition().y - (*e).getRadius() * 2);
+
+					(*e)     .reverseSpeedY();
+					(*li)    .reverseSpeedY();
+				}
+				if (side(*li, *e) == Side::HORIZONTAL)
+				{
+					if ((*li).getPosition().x < (*e).getPosition().x)    (*li)    .setPosition((*e).getPosition().x - (*li).getRadius() * 2    , (*li).getPosition().y);
+					else                                                 (*e)     .setPosition((*li).getPosition().x - (*e).getRadius() * 2    , (*e).getPosition().y);
+
+					(*e)     .reverseSpeedX();
+					(*li)    .reverseSpeedX();
+				}
+			}
+		}
+	}
+}
+	
+
+void Physics::checkCollisions(list<Ball>& balls, vector<vector<Block>>& blocks, Platform& platform, sf::RenderWindow& window, float elapsed, Counter& counter) {
+	for (auto& ball : balls) {
+		platformBallCollision    (ball, platform, counter, window, elapsed);
+		ballBlocksCollision      (ball, blocks, elapsed, counter, platform);
+		ballScreenCollision      (ball, window, counter, platform);
+	}
+	ballBallCollision(balls);
 }

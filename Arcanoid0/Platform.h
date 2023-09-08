@@ -4,18 +4,20 @@
 
 class Platform
 {
+private:
+	int                   speed = 8000;
+	sf::RectangleShape    platform;
 public:
-	int                   speed           = 8000   ;
+	
 	bool                  isFloor         = false  ;
 	bool                  spawnNewBall    = false  ;
-	sf::RectangleShape    platform                 ;
 
 	Platform(int width, int heigth, int windowWidth, int windowHeight);
 	
-	void    move         (float, int windowWidth)  ;
-	int     getX         ()                        ;
-	int     getY         ()                        ;                       
-	int     getWidth     ()                        ;
-	int     getHeight    ()                        ;
+	void                   setSize        (int, int)                         ;
+	void                   move           (float, int windowWidth)           ;
+	sf::Vector2f           getPosition    ()                          const  ;
+	sf::Vector2f           getSize        ()                          const  ;
+	sf::RectangleShape&    getPlatform    ()                                 ;
 };
 

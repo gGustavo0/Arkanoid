@@ -6,10 +6,7 @@ Block::Block(int x, int y, std::list<Bonus*>& bonuses, int size): block(*new sf:
 	block.setPosition(sf::Vector2f(x, y));
 	block.setFillColor(sf::Color::Green);
 	int r = rand() % 37;
-	if (!texture.create(200, 200))
-	{
-		// error...
-	}
+	if (!texture.create(200, 200)) exit(-5);
 
 	switch (r)
 	{
@@ -23,64 +20,61 @@ Block::Block(int x, int y, std::list<Bonus*>& bonuses, int size): block(*new sf:
 		break;
 	case 1:
 		bonusType = BonusType::BALL_STICKED;
-		if (!texture.loadFromFile("stick.png"))
-		{
-			// error...
-		}
+		if (!texture.loadFromFile("stick.png")) exit(-6);
 		block.setTexture(&texture);
 		break;
 	case 2:
 		bonusType = BonusType::DECREASE_BALL_SPEED;
-		if (!texture.loadFromFile("arrowDown.png"))
-		{
-			// error...
-		}
+		if (!texture.loadFromFile("arrowDown.png")) exit(-6);
 		block.setTexture(&texture);
 		break;
 	case 3:
 		bonusType = BonusType::INCREASE_BALL_SPEED;
-		if (!texture.loadFromFile("arrowUp.png"))
-		{
-			// error...
-		}
+		if (!texture.loadFromFile("arrowUp.png")) exit(-6);
 		block.setTexture(&texture);
 		break;
 	case 4:
 		bonusType = BonusType::INCREASE_PLATFORM;
-		if (!texture.loadFromFile("increase.png"))
-		{
-			// error...
-		}
+		if (!texture.loadFromFile("increase.png")) exit(-6);
 		block.setTexture(&texture);
 		break;
 	case 5:
 		bonusType = BonusType::DECREASE_PLATFORM;
-		if (!texture.loadFromFile("decrease.png"))
-		{
-			// error...
-		}
+		if (!texture.loadFromFile("decrease.png")) exit(-6);
 		block.setTexture(&texture);
 		break;
 	case 6:
 		bonusType = BonusType::FLOOR;
-		if (!texture.loadFromFile("floor.png"))
-		{
-			// error...
-		}
+		if (!texture.loadFromFile("floor.png")) exit(-6);
 		block.setTexture(&texture);
 		break;
 	case 7:
 		bonusType = BonusType::SECOND_BALL;
-		if (!texture.loadFromFile("ball.png"))
-		{
-			// error...
-		}
+		if (!texture.loadFromFile("ball.png")) exit(-6);
 		block.setTexture(&texture);
 		block.setTextureRect(sf::IntRect(100, 100, 50, 50));
 		break;
 	}
-	
-	
+}
+
+int Block::getSize() const {
+	return block.getSize().x;
+}
+
+sf::Vector2f Block::getPosition() const {
+	return block.getPosition();
+}
+
+BonusType Block::getBonusType() const {
+	return bonusType;
+}
+
+int Block::getHP() const {
+	return hp;
+}
+
+sf::RectangleShape& Block::getBlock() {
+	return block;
 }
 
 void Block::getHit(Counter& counter, Ball& ball, Platform& platform) {

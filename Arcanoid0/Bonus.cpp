@@ -5,6 +5,14 @@ Bonus::Bonus(sf::Vector2f position): bonus(*new sf::RectangleShape(sf::Vector2f(
 	bonus.setPosition(position);
 }
 
+int Bonus::getSpeed() const {
+	return speed;
+}
+
+sf::RectangleShape& Bonus::getBonus() {
+	return bonus;
+}
+
 void Bonus::destroy() {}
 
 void Bonus::move(float elapsed) {
