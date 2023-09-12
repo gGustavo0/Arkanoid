@@ -47,7 +47,7 @@ void Counter::minusPoints() {
 }
 
 bool Counter::ifWin() const {
-	return points >= 30;
+	return points >= 100;
 }
 
 bool Counter::ifGameOver() const{

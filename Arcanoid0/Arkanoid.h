@@ -38,6 +38,8 @@ public:
 		, int platformWidth = PLATFORM_WIDTH, int platformHeight = PLATFORM_HEIGTH, int ballRadius = BALL_RADIUS
 		, int platformPositionX = PLATFORM_POSITION_X, int platformPositionY = PLATFORM_POSITION_Y);
 
+	~Arkanoid();
+
 	void start();
 private:
 	unique_ptr<sf::RenderWindow>        window       ;

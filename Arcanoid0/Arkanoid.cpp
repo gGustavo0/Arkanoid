@@ -27,6 +27,10 @@ bool Arkanoid::checkPoints() {
 	return false;
 }
 
+Arkanoid::~Arkanoid() {
+	for (Bonus*    bonus:    bonuses)       delete(bonus);
+}
+
 void Arkanoid::handleEvents(float elapsed) {
 	sf::Event event;
 	while (window->pollEvent(event))

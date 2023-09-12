@@ -45,7 +45,7 @@ private:
 	sf::Texture           texture;
 	sf::RectangleShape    block;
 	BonusType             bonusType;
-	int                   hp = 3;
+	int                   hp = 1;
 	list<Bonus*>&         bonuses;
 };
 
